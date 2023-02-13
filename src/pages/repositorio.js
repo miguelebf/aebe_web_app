@@ -29,18 +29,30 @@ const storage = getStorage();
 // ==============================|| SAMPLE PAGE ||============================== //
 
 const RepositorioPage = () => {
-  const [dataes_2021, setDataes_2021] = useState([{ id: 'root', nombre: 'Cargando' }]);
+  const [dataes_2021, setDataes_2021] = useState([{ id: 'root', nombre: 'Cargando' }]); //ESTADISTICOS SEMANALES
   const [dataes_2022, setDataes_2022] = useState([{ id: 'root', nombre: 'Cargando' }]);
+  const [dataes_2023, setDataes_2023] = useState([{ id: 'root', nombre: 'Cargando' }]);
 
   const [dataem_2022, setDataem_2022] = useState([{ id: 'root', nombre: 'Cargando' }]); //ESTADISTICOS MENSUALES
+  const [dataem_2023, setDataem_2023] = useState([{ id: 'root', nombre: 'Cargando' }]);
+
   const [dataos_2020, setDataos_2020] = useState([{ id: 'root', nombre: 'Cargando' }]);
   const [dataos_2021, setDataos_2021] = useState([{ id: 'root', nombre: 'Cargando' }]);
   const [dataos_2022, setDataos_2022] = useState([{ id: 'root', nombre: 'Cargando' }]);
+  const [dataos_2023, setDataos_2023] = useState([{ id: 'root', nombre: 'Cargando' }]);
+
   const [dataps, setDataps] = useState([{ id: 'root', nombre: 'Cargando' }]);
   const [databw, setDatabw] = useState([{ id: 'root', nombre: 'Cargando' }]);
+  const [databw_2023, setDatabw_2023] = useState([{ id: 'root', nombre: 'Cargando' }]);
   const [datarc_2022, setDatarc_2022] = useState([{ id: 'root', nombre: 'Cargando' }]);
   const [datarc_ru, setDatarc_ru] = useState([{ id: 'root', nombre: 'Cargando' }]);
   const [dataanuarios, setDataanuarios] = useState([{ id: 'root', nombre: 'Cargando' }]);
+
+  const [dataspot_2022, setDataspot_2022] = useState([{ id: 'root', nombre: 'Cargando' }]);
+  const [dataspot_2023, setDataspot_2023] = useState([{ id: 'root', nombre: 'Cargando' }]);
+
+  const [dataouo_2022, setDataouo_2022] = useState([{ id: 'root', nombre: 'Cargando' }]);
+  const [dataouo_2023, setDataouo_2023] = useState([{ id: 'root', nombre: 'Cargando' }]);
 
   //Loading
   const [loading, setLoading] = useState(false);
@@ -93,6 +105,30 @@ const RepositorioPage = () => {
           if (flag == 11) {
             setDataanuarios(list);
           }
+          if (flag == 12) {
+            setDataes_2023(list);
+          }
+          if (flag == 13) {
+            setDataem_2023(list);
+          }
+          if (flag == 14) {
+            setDataos_2023(list);
+          }
+          if (flag == 15) {
+            setDatabw_2023(list);
+          }
+          if (flag == 16) {
+            setDataspot_2022(list);
+          }
+          if (flag == 17) {
+            setDataspot_2023(list);
+          }
+          if (flag == 18) {
+            setDataouo_2022(list);
+          }
+          if (flag == 19) {
+            setDataouo_2023(list);
+          }
         })
         .catch((error) => {
           // Uh-oh, an error occurred!
@@ -101,29 +137,50 @@ const RepositorioPage = () => {
     };
     const listRef_es_2021 = ref(storage, 'gs://aebe-ea435.appspot.com/1. ESTADISTICOS SEMANALES/2021');
     const listRef_es_2022 = ref(storage, 'gs://aebe-ea435.appspot.com/1. ESTADISTICOS SEMANALES/2022');
+    const listRef_es_2023 = ref(storage, 'gs://aebe-ea435.appspot.com/1. ESTADISTICOS SEMANALES/2023');
+
     const listRef_em_2022 = ref(storage, 'gs://aebe-ea435.appspot.com/2.ESTADISTICOS MENSUALES/2022');
+    const listRef_em_2023 = ref(storage, 'gs://aebe-ea435.appspot.com/2.ESTADISTICOS MENSUALES/2023');
+
     const listRef_os_2020 = ref(storage, 'gs://aebe-ea435.appspot.com/3. OBSERVACIONES SEMANALES/2020');
     const listRef_os_2021 = ref(storage, 'gs://aebe-ea435.appspot.com/3. OBSERVACIONES SEMANALES/2021');
     const listRef_os_2022 = ref(storage, 'gs://aebe-ea435.appspot.com/3. OBSERVACIONES SEMANALES/2022');
+    const listRef_os_2023 = ref(storage, 'gs://aebe-ea435.appspot.com/3. OBSERVACIONES SEMANALES/2023');
+
     const listRef_ps = ref(storage, 'gs://aebe-ea435.appspot.com/4. PRODUCCIÓN SEMANAL');
     const listRef_bw = ref(storage, 'gs://aebe-ea435.appspot.com/5. BANANA WEEKLY MARKET SENSE/2022');
+    const listRef_bw_2023 = ref(storage, 'gs://aebe-ea435.appspot.com/5. BANANA WEEKLY MARKET SENSE/2023');
 
     const listRef_rc_2022 = ref(storage, 'gs://aebe-ea435.appspot.com/6. REPORTES DE COYUNTURA/2022');
     const listRef_rc_ru = ref(storage, 'gs://aebe-ea435.appspot.com/6. REPORTES DE COYUNTURA/2022/RUSIA - UCRANIA');
     const listRef_anuarios = ref(storage, 'gs://aebe-ea435.appspot.com/7. ANUARIOS');
 
+    const listRef_ouo_2022 = ref(storage, 'gs://aebe-ea435.appspot.com/8. OFERTA UNION EUROPEA/2022');
+    const listRef_ouo_2023 = ref(storage, 'gs://aebe-ea435.appspot.com/8. OFERTA UNION EUROPEA/2023');
+
+    const listRef_spot_2022 = ref(storage, 'gs://aebe-ea435.appspot.com/9. SPOT/2022');
+    const listRef_spot_2023 = ref(storage, 'gs://aebe-ea435.appspot.com/9. SPOT/2023');
+
     var count = 1;
     create_list(listRef_es_2021, count, 1);
     create_list(listRef_es_2022, count, 2);
+    create_list(listRef_es_2023, count, 12);
     create_list(listRef_em_2022, count, 3);
+    create_list(listRef_em_2023, count, 13);
     create_list(listRef_os_2020, count, 4);
     create_list(listRef_os_2021, count, 5);
     create_list(listRef_os_2022, count, 6);
+    create_list(listRef_os_2023, count, 14);
     create_list(listRef_ps, count, 7);
     create_list(listRef_bw, count, 8);
+    create_list(listRef_bw_2023, count, 15);
     create_list(listRef_rc_2022, count, 9);
     create_list(listRef_rc_ru, count, 10);
     create_list(listRef_anuarios, count, 11);
+    create_list(listRef_spot_2022, count, 16);
+    create_list(listRef_spot_2023, count, 17);
+    create_list(listRef_ouo_2022, count, 18);
+    create_list(listRef_ouo_2023, count, 19);
   }, []);
 
   const renderTree = (list) =>
@@ -245,12 +302,22 @@ const RepositorioPage = () => {
                 {renderTree(dataes_2022)}
               </Grid>
             </TreeItem>
+            <TreeItem nodeId="80" label={<Typography variant="h6"> 2023</Typography>}>
+              <Grid container spacing={2}>
+                {renderTree(dataes_2023)}
+              </Grid>
+            </TreeItem>
           </TreeItem>
           {/*Estadistico Mensual*/}
           <TreeItem nodeId="3" label={<Typography variant="h5"> Estadistico Mensual</Typography>}>
             <TreeItem nodeId="52" label={<Typography variant="h6"> 2022</Typography>}>
               <Grid container spacing={2}>
                 {renderTree(dataem_2022)}
+              </Grid>
+            </TreeItem>
+            <TreeItem nodeId="61" label={<Typography variant="h6"> 2023</Typography>}>
+              <Grid container spacing={2}>
+                {renderTree(dataem_2023)}
               </Grid>
             </TreeItem>
           </TreeItem>
@@ -271,6 +338,11 @@ const RepositorioPage = () => {
                 {renderTree(dataos_2022)}
               </Grid>
             </TreeItem>
+            <TreeItem nodeId="60" label={<Typography variant="h6"> 2023</Typography>}>
+              <Grid container spacing={2}>
+                {renderTree(dataos_2023)}
+              </Grid>
+            </TreeItem>
           </TreeItem>
           {/*Produccion Semanal*/}
           <TreeItem nodeId="5" label={<Typography variant="h5"> Produccion Semanal</Typography>}>
@@ -283,6 +355,11 @@ const RepositorioPage = () => {
             <TreeItem nodeId="56" label={<Typography variant="h6"> 2022</Typography>}>
               <Grid container spacing={2}>
                 {renderTree(databw)}
+              </Grid>
+            </TreeItem>
+            <TreeItem nodeId="64" label={<Typography variant="h6"> 2023</Typography>}>
+              <Grid container spacing={2}>
+                {renderTree(databw_2023)}
               </Grid>
             </TreeItem>
           </TreeItem>
@@ -304,6 +381,32 @@ const RepositorioPage = () => {
             <Grid container spacing={2}>
               {renderTree(dataanuarios)}
             </Grid>
+          </TreeItem>
+          {/*Oferta Union Europea*/}
+          <TreeItem nodeId="70" label={<Typography variant="h5"> Oferta Union Europea</Typography>}>
+            <TreeItem nodeId="72" label={<Typography variant="h6"> 2022</Typography>}>
+              <Grid container spacing={2}>
+                {renderTree(dataouo_2022)}
+              </Grid>
+            </TreeItem>
+            <TreeItem nodeId="71" label={<Typography variant="h6"> 2023</Typography>}>
+              <Grid container spacing={2}>
+                {renderTree(dataouo_2023)}
+              </Grid>
+            </TreeItem>
+          </TreeItem>
+          {/*Spot*/}
+          <TreeItem nodeId="66" label={<Typography variant="h5"> Spot</Typography>}>
+            <TreeItem nodeId="68" label={<Typography variant="h6"> 2022</Typography>}>
+              <Grid container spacing={2}>
+                {renderTree(dataspot_2022)}
+              </Grid>
+            </TreeItem>
+            <TreeItem nodeId="69" label={<Typography variant="h6"> 2023</Typography>}>
+              <Grid container spacing={2}>
+                {renderTree(dataspot_2023)}
+              </Grid>
+            </TreeItem>
           </TreeItem>
         </TreeView>
       </Paper>
