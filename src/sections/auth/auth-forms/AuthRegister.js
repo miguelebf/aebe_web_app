@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { useTheme } from '@mui/material/styles';
 
 // material-ui
 import {
@@ -14,10 +13,7 @@ import {
   InputLabel,
   OutlinedInput,
   Stack,
-  Typography,
-  Select,
-  MenuItem,
-  Chip
+  Typography
 } from '@mui/material';
 
 // third party
@@ -40,52 +36,8 @@ const AuthRegister = () => {
   const { firebaseRegister } = useAuth();
   const scriptedRef = useScriptRef();
 
-  //Select Fincas
-  const ITEM_HEIGHT = 48;
-  const ITEM_PADDING_TOP = 8;
-  const MenuProps = {
-    PaperProps: {
-      style: {
-        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-        width: 250
-      }
-    }
-  };
-
-  const names = [
-    'Oliver Hansen',
-    'Van Henry',
-    'April Tucker',
-    'Ralph Hubbard',
-    'Omar Alexander',
-    'Carlos Abbott',
-    'Miriam Wagner',
-    'Bradley Wilkerson',
-    'Virginia Andrews',
-    'Kelly Snyder'
-  ];
-
-  function getStyles(name, personName, theme) {
-    return {
-      fontWeight: personName.indexOf(name) === -1 ? theme.typography.fontWeightRegular : theme.typography.fontWeightMedium
-    };
-  }
-  const handleChangeFincas = (event) => {
-    const {
-      target: { value }
-    } = event;
-    setPersonName(
-      // On autofill we get a stringified value.
-      typeof value === 'string' ? value.split(',') : value
-    );
-  };
-  const theme = useTheme();
-  const [personName, setPersonName] = useState([]);
-
   const [level, setLevel] = useState();
   const [showPassword, setShowPassword] = useState(false);
-  const [nivelEscolar, setnivelEscolar] = useState('');
-  const [estadoCivil, setestadoCivil] = useState('');
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -111,19 +63,14 @@ const AuthRegister = () => {
           firstname: '',
           lastname: '',
           email: '',
-          company: '',
           password: '',
-          edad: '',
-          anos_experiencia: '',
           submit: null
         }}
         validationSchema={Yup.object().shape({
           firstname: Yup.string().max(255).required('Nombre es requerido'),
           lastname: Yup.string().max(255).required('Apellido es requerido'),
           email: Yup.string().email('EL correo electrónico debe ser valido').max(255).required('Correo Electrónico es requerido'),
-          password: Yup.string().max(255).required('Contraseña es requerida'),
-          edad: Yup.number().max(80).required('Edad es requerida'),
-          anos_experiencia: Yup.number().max(70).required('Años de experiencia es requerida')
+          password: Yup.string().max(255).required('Contraseña es requerida')
         })}
         onSubmit={(values, { setErrors, setStatus, setSubmitting }) => {
           try {
@@ -135,8 +82,33 @@ const AuthRegister = () => {
                   })
                   .then(
                     function () {
-                      // Update successful.
-                      location.reload();
+                      // API request for user register
+                      const requestOptions = {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', access_token: '1234567890' },
+                        body: JSON.stringify({ username: values.email.split('@')[0], email: values.email, uuid: firebase.user.uid })
+                      };
+                      fetch(`https://api-aebe.herokuapp.com/api/v1/users`, requestOptions)
+                        .then((response) => {
+                          console.log(response);
+                          if (response.status === 200) {
+                            setStatus({ success: true });
+                            setSubmitting(false);
+                            console.log('Success');
+                            // Update successful.
+                            setSuccess(true);
+                          } else {
+                            setStatus({ success: false });
+                            setErrors({ submit: 'No se pudo crear usuario' });
+                            setSubmitting(false);
+                          }
+                        })
+                        .then((result) => console.log(result))
+                        .catch((error) => {
+                          setStatus({ success: false });
+                          setErrors({ submit: error.message });
+                          setSubmitting(false);
+                        });
                     },
                     function (error) {
                       console.log(error);
@@ -205,182 +177,6 @@ const AuthRegister = () => {
                   )}
                 </Stack>
               </Grid>
-              <Grid item xs={12} md={6}>
-                <Stack spacing={1}>
-                  <FormControl fullWidth>
-                    <InputLabel id="label_nivel">Nivel Escolar</InputLabel>
-                    <Select
-                      labelId="label_nivel"
-                      id="nive_escolar"
-                      value={nivelEscolar}
-                      label="Nivel Escolar"
-                      onChange={(e) => {
-                        setnivelEscolar(e.target.value);
-                      }}
-                    >
-                      <MenuItem value={10}>Primaria</MenuItem>
-                      <MenuItem value={20}>Secundaria</MenuItem>
-                      <MenuItem value={30}>3er Nivel </MenuItem>
-                      <MenuItem value={30}>4to Nivel</MenuItem>
-                    </Select>
-
-                    {touched.company && errors.company && (
-                      <FormHelperText error id="helper-text-company-signup">
-                        {errors.company}
-                      </FormHelperText>
-                    )}
-                  </FormControl>
-                </Stack>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <Stack spacing={1}>
-                  <FormControl fullWidth>
-                    <InputLabel id="label_nivel">Estado Civil</InputLabel>
-                    <Select
-                      labelId="label_nivel"
-                      id="nive_escolar"
-                      value={estadoCivil}
-                      label="Nivel Escolar"
-                      onChange={(e) => {
-                        setestadoCivil(e.target.value);
-                      }}
-                    >
-                      <MenuItem value={10}>Solter@</MenuItem>
-                      <MenuItem value={20}>Casad@</MenuItem>
-                      <MenuItem value={30}>Divorciad@ </MenuItem>
-                      <MenuItem value={30}>Viud@</MenuItem>
-                    </Select>
-
-                    {touched.company && errors.company && (
-                      <FormHelperText error id="helper-text-company-signup">
-                        {errors.company}
-                      </FormHelperText>
-                    )}
-                  </FormControl>
-                </Stack>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <Stack spacing={1}>
-                  <InputLabel htmlFor="edad_id">Edad</InputLabel>
-                  <OutlinedInput
-                    fullWidth
-                    error={Boolean(touched.edad && errors.edad)}
-                    type="number"
-                    id="edad_id"
-                    value={values.edad}
-                    name="edad"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    placeholder="Edad"
-                    inputProps={{}}
-                  />
-                  {touched.edad && errors.edad && (
-                    <FormHelperText error id="edad_id">
-                      {errors.edad}
-                    </FormHelperText>
-                  )}
-                </Stack>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <Stack spacing={1}>
-                  <InputLabel htmlFor="anos_id">Años de Experiencia</InputLabel>
-                  <OutlinedInput
-                    fullWidth
-                    error={Boolean(touched.anos_experiencia && errors.anos_experiencia)}
-                    type="number"
-                    id="anos_id"
-                    value={values.anos_experiencia}
-                    name="anos_experiencia"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    placeholder="Años"
-                    inputProps={{}}
-                  />
-                  {touched.anos_experiencia && errors.anos_experiencia && (
-                    <FormHelperText error id="anos_id">
-                      {errors.anos_experiencia}
-                    </FormHelperText>
-                  )}
-                </Stack>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <Stack spacing={1}>
-                  <InputLabel htmlFor="company-signup">Numero de Hijos</InputLabel>
-                  <OutlinedInput
-                    fullWidth
-                    error={Boolean(touched.company && errors.company)}
-                    id="company-signup"
-                    value={values.company}
-                    name="edad"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    placeholder="Años"
-                    inputProps={{}}
-                  />
-                  {touched.company && errors.company && (
-                    <FormHelperText error id="helper-text-company-signup">
-                      {errors.company}
-                    </FormHelperText>
-                  )}
-                </Stack>
-              </Grid>
-              <Grid item xs={12}>
-                <Stack spacing={1}>
-                  <FormControl fullWidth>
-                    <InputLabel id="label_nivel">Empresa</InputLabel>
-                    <Select
-                      labelId="label_nivel"
-                      id="nive_escolar"
-                      value={nivelEscolar}
-                      label="Nivel Escolar"
-                      onChange={(e) => {
-                        setnivelEscolar(e.target.value);
-                      }}
-                    >
-                      <MenuItem value={10}>Primaria</MenuItem>
-                      <MenuItem value={20}>Secundaria</MenuItem>
-                      <MenuItem value={30}>3er Nivel </MenuItem>
-                      <MenuItem value={30}>4to Nivel</MenuItem>
-                    </Select>
-
-                    {touched.company && errors.company && (
-                      <FormHelperText error id="helper-text-company-signup">
-                        {errors.company}
-                      </FormHelperText>
-                    )}
-                  </FormControl>
-                </Stack>
-              </Grid>
-              <Grid item xs={12}>
-                <Stack spacing={1}>
-                  <FormControl fullWidth>
-                    <InputLabel id="demo-multiple-chip-label">Fincas</InputLabel>
-                    <Select
-                      labelId="demo-multiple-chip-label"
-                      id="demo-multiple-chip"
-                      multiple
-                      value={personName}
-                      onChange={handleChangeFincas}
-                      input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
-                      renderValue={(selected) => (
-                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                          {selected.map((value) => (
-                            <Chip key={value} label={value} />
-                          ))}
-                        </Box>
-                      )}
-                      MenuProps={MenuProps}
-                    >
-                      {names.map((name) => (
-                        <MenuItem key={name} value={name} style={getStyles(name, personName, theme)}>
-                          {name}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Stack>
-              </Grid>
-
               <Grid item xs={12}>
                 <Stack spacing={1}>
                   <InputLabel htmlFor="email-signup">Correo Electronico*</InputLabel>

@@ -1,71 +1,85 @@
 import { useEffect } from 'react';
+import * as React from 'react';
 
 // material-ui
-import { Button, FormHelperText, Grid, InputLabel, OutlinedInput, Stack } from '@mui/material';
+import { Button, FormHelperText, Grid, InputLabel, OutlinedInput, Stack, Snackbar } from '@mui/material';
+import MuiAlert from '@mui/material/Alert';
 
 // third party
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 
 // project import
-import useAuth from 'hooks/useAuth';
+
 import useScriptRef from 'hooks/useScriptRef';
 
 import AnimateButton from 'components/@extended/AnimateButton';
 
-// ============================|| FIREBASE - REGISTER ||============================ //
+// ============================|| REGISTER - COMPANY ||============================ //
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const AuthRegister = () => {
-  const { firebaseRegister } = useAuth();
   const scriptedRef = useScriptRef();
+  const [success, setSuccess] = React.useState(false);
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setSuccess(false);
+  };
 
   useEffect(() => {}, []);
 
   return (
     <>
+      <Snackbar open={success} autoHideDuration={4000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+          Empresa creada con éxito!
+        </Alert>
+      </Snackbar>
       <Formik
         initialValues={{
-          firstname: '',
-          lastname: '',
-          email: '',
-          company: '',
-          password: '',
-          edad: '',
-          anos_experiencia: '',
+          nombre: '',
+          descripcion: '',
           submit: null
         }}
         validationSchema={Yup.object().shape({
-          firstname: Yup.string().max(255).required('Nombre es requerido'),
-          lastname: Yup.string().max(255).required('Apellido es requerido'),
-          email: Yup.string().email('EL correo electrónico debe ser valido').max(255).required('Correo Electrónico es requerido'),
-          password: Yup.string().max(255).required('Contraseña es requerida'),
-          edad: Yup.number().max(80).required('Edad es requerida'),
-          anos_experiencia: Yup.number().max(70).required('Años de experiencia es requerida')
+          nombre: Yup.string().max(255).required('Nombre es requerido'),
+          descripcion: Yup.string().max(255).required('Descripción es requerido')
         })}
-        onSubmit={(values, { setErrors, setStatus, setSubmitting }) => {
+        onSubmit={(values, { setErrors, setStatus, setSubmitting, resetForm }) => {
           try {
-            firebaseRegister(values.email, values.password).then(
-              (firebase) => {
-                firebase.user
-                  .updateProfile({
-                    displayName: values.firstname + ' ' + values.lastname
-                  })
-                  .then(
-                    function () {
-                      // Update successful.
-                      location.reload();
-                    },
-                    function (error) {
-                      console.log(error);
-                    }
-                  );
-              },
-              (err) => {
+            const requestOptions = {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', access_token: '1234567890' },
+              body: JSON.stringify({ name: values.nombre, description: values.descripcion })
+            };
+            fetch(`https://api-aebe.herokuapp.com/api/v1/companies`, requestOptions)
+              .then((response) => {
+                console.log(response);
+                if (response.status === 200) {
+                  setStatus({ success: true });
+                  setSubmitting(false);
+                  console.log('Success');
+                  resetForm();
+                  setSuccess(true);
+                } else {
+                  setStatus({ success: false });
+                  setErrors({ submit: 'No se pudo crear la empresa' });
+                  setSubmitting(false);
+                }
+              })
+              .then((result) => console.log(result))
+              .catch((error) => {
                 setStatus({ success: false });
-                setErrors({ submit: err.message });
+                setErrors({ submit: error.message });
                 setSubmitting(false);
-              }
-            );
+              });
           } catch (err) {
             console.error(err);
             if (scriptedRef.current) {
@@ -86,17 +100,17 @@ const AuthRegister = () => {
                     fullWidth
                     error={Boolean(touched.email && errors.email)}
                     id="email-login"
-                    type="email"
-                    value={values.email}
-                    name="email"
+                    type="text"
+                    value={values.nombre}
+                    name="nombre"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    placeholder="demo@empresa.com"
+                    placeholder="Nombre de la empresa"
                     inputProps={{}}
                   />
-                  {touched.email && errors.email && (
+                  {touched.nombre && errors.nombre && (
                     <FormHelperText error id="helper-text-email-signup">
-                      {errors.email}
+                      {errors.nombre}
                     </FormHelperText>
                   )}
                 </Stack>
@@ -108,11 +122,10 @@ const AuthRegister = () => {
                     multiline
                     rows={3}
                     fullWidth
-                    error={Boolean(touched.password && errors.password)}
                     id="password-signup"
                     type="text"
-                    value={values.password}
-                    name="password"
+                    value={values.descripcion}
+                    name="descripcion"
                     onBlur={handleBlur}
                     onChange={(e) => {
                       handleChange(e);
@@ -120,9 +133,9 @@ const AuthRegister = () => {
                     placeholder="Descripción de la empresa"
                     inputProps={{}}
                   />
-                  {touched.password && errors.password && (
+                  {touched.descripcion && errors.descripcion && (
                     <FormHelperText error id="helper-text-password-signup">
-                      {errors.password}
+                      {errors.descripcion}
                     </FormHelperText>
                   )}
                 </Stack>

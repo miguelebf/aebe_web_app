@@ -1,154 +1,164 @@
 import { useEffect, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
-import { useTheme } from '@mui/material/styles';
+
+import * as React from 'react';
 
 // material-ui
 import {
-  Box,
   Button,
   FormControl,
   FormHelperText,
   Grid,
-  Link,
-  InputAdornment,
   InputLabel,
   OutlinedInput,
   Stack,
-  Typography,
-  Select,
-  MenuItem,
-  Chip
+  Autocomplete,
+  TextField,
+  CircularProgress,
+  Snackbar
 } from '@mui/material';
-
+import MuiAlert from '@mui/material/Alert';
 // third party
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 
-// project import
-import useAuth from 'hooks/useAuth';
-import useScriptRef from 'hooks/useScriptRef';
-import IconButton from 'components/@extended/IconButton';
 import AnimateButton from 'components/@extended/AnimateButton';
-import { strengthColor, strengthIndicator } from 'utils/password-strength';
-
-// assets
-import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 
 // ============================|| FIREBASE - REGISTER ||============================ //
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const AuthRegister = () => {
-  const { firebaseRegister } = useAuth();
-  const scriptedRef = useScriptRef();
+  //States
+  const [provincia, setProvincia] = useState(null);
+  const [options, setOptions] = useState([]);
+  const [inputValue, setInputValue] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = React.useState(false);
 
-  //Select Fincas
-  const ITEM_HEIGHT = 48;
-  const ITEM_PADDING_TOP = 8;
-  const MenuProps = {
-    PaperProps: {
-      style: {
-        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-        width: 250
-      }
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
     }
+
+    setSuccess(false);
   };
 
-  const names = [
-    'Oliver Hansen',
-    'Van Henry',
-    'April Tucker',
-    'Ralph Hubbard',
-    'Omar Alexander',
-    'Carlos Abbott',
-    'Miriam Wagner',
-    'Bradley Wilkerson',
-    'Virginia Andrews',
-    'Kelly Snyder'
-  ];
-
-  function getStyles(name, personName, theme) {
-    return {
-      fontWeight: personName.indexOf(name) === -1 ? theme.typography.fontWeightRegular : theme.typography.fontWeightMedium
+  const getEmpresas = (empresa) => {
+    const requestOptions = {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json', access_token: '1234567890' }
     };
-  }
-  const handleChangeFincas = (event) => {
-    const {
-      target: { value }
-    } = event;
-    setPersonName(
-      // On autofill we get a stringified value.
-      typeof value === 'string' ? value.split(',') : value
-    );
-  };
-  const theme = useTheme();
-  const [personName, setPersonName] = useState([]);
-
-  const [level, setLevel] = useState();
-  const [showPassword, setShowPassword] = useState(false);
-  const [nivelEscolar, setnivelEscolar] = useState('');
-  const [estadoCivil, setestadoCivil] = useState('');
-
-  const handleClickShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
-
-  const changePassword = (value) => {
-    const temp = strengthIndicator(value);
-    setLevel(strengthColor(temp));
+    setLoading(true);
+    fetch('https://api-aebe.herokuapp.com/api/v1/companies/search/' + empresa, requestOptions)
+      .then((response) => {
+        setLoading(false);
+        return response.json();
+      })
+      .then((result) => {
+        setLoading(false);
+        setOptions(result);
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.log('error', error);
+      });
   };
 
   useEffect(() => {
-    changePassword('');
-  }, []);
+    if (inputValue.length < 3) {
+      setOptions([]);
+      return undefined;
+    }
+    if (options.includes(inputValue)) {
+      return undefined;
+    }
+    getEmpresas(inputValue);
+  }, [inputValue]);
+
+  //================================================================================================
+
+  const states_ec = [
+    { label: 'Azuay', value: 'Azuay' },
+    { label: 'Bolivar', value: 'Bolivar' },
+    { label: 'Carchi', value: 'Carchi' },
+    { label: 'Chimborazo', value: 'Chimborazo' },
+    { label: 'Cotopaxi', value: 'Cotopaxi' },
+    { label: 'El Oro', value: 'El Oro' },
+    { label: 'Esmeraldas', value: 'Esmeraldas' },
+    { label: 'Galápagos', value: 'Galápagos' },
+    { label: 'Guayas', value: 'Guayas' },
+    { label: 'Loja', value: 'Loja' },
+    { label: 'Los Ríos', value: 'Los Ríos' },
+    { label: 'Manabí', value: 'Manabí' },
+    { label: 'Morona Santiago', value: 'Morona Santiago' },
+    { label: 'Napo', value: 'Napo' },
+    { label: 'Orellana', value: 'Orellana' },
+    { label: 'Pastaza', value: 'Pastaza' },
+    { label: 'Pichincha', value: 'Pichincha' },
+    { label: 'Santa Elena', value: 'Santa Elena' },
+    { label: 'Santo Domingo', value: 'Santo Domingo' },
+    { label: 'Sucumbíos', value: 'Sucumbíos' },
+    { label: 'Tungurahua', value: 'Tungurahua' },
+    { label: 'Zamora Chinchipe', value: 'Zamora Chinchipe' },
+    { label: '', value: '' }
+  ];
 
   return (
     <>
+      <Snackbar open={success} autoHideDuration={4000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+          Finca creada con éxito!
+        </Alert>
+      </Snackbar>
       <Formik
         initialValues={{
-          firstname: '',
-          lastname: '',
-          email: '',
-          company: '',
-          password: '',
-          edad: '',
-          anos_experiencia: '',
+          nombre_finca: '',
+          coordenadas: '',
+          ciudad: '',
           submit: null
         }}
         validationSchema={Yup.object().shape({
-          firstname: Yup.string().max(255).required('Nombre es requerido'),
-          lastname: Yup.string().max(255).required('Apellido es requerido'),
-          email: Yup.string().email('EL correo electrónico debe ser valido').max(255).required('Correo Electrónico es requerido'),
-          password: Yup.string().max(255).required('Contraseña es requerida'),
-          edad: Yup.number().max(80).required('Edad es requerida'),
-          anos_experiencia: Yup.number().max(70).required('Años de experiencia es requerida')
+          nombre_finca: Yup.string().max(255).required('Nombre es requerido'),
+          coordenadas: Yup.string().max(255).required('Coordenadas es requerido'),
+          ciudad: Yup.string().max(255).required('Ciudad es requerido')
         })}
-        onSubmit={(values, { setErrors, setStatus, setSubmitting }) => {
+        onSubmit={(values, { setErrors, setStatus, setSubmitting, resetForm }) => {
           try {
-            firebaseRegister(values.email, values.password).then(
-              (firebase) => {
-                firebase.user
-                  .updateProfile({
-                    displayName: values.firstname + ' ' + values.lastname
-                  })
-                  .then(
-                    function () {
-                      // Update successful.
-                      location.reload();
-                    },
-                    function (error) {
-                      console.log(error);
-                    }
-                  );
-              },
-              (err) => {
+            const requestOptions = {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', access_token: '1234567890' },
+              body: JSON.stringify({
+                name: values.nombre_finca,
+                city: values.ciudad,
+                state: provincia['value'],
+                geo: values.coordenadas,
+                company_id: options.find((o) => o.name === inputValue)['id']
+              })
+            };
+            fetch('https://api-aebe.herokuapp.com/api/v1/fincas', requestOptions)
+              .then((response) => {
+                console.log(response);
+                if (response.status === 200) {
+                  setStatus({ success: true });
+                  setSubmitting(false);
+                  console.log('Success');
+                  resetForm();
+                  setProvincia(null);
+                  setOptions([]);
+                  setSuccess(true);
+                } else {
+                  setStatus({ success: false });
+                  setErrors({ submit: 'No se pudo crear la empresa' });
+                  setSubmitting(false);
+                }
+              })
+              .then((result) => console.log(result))
+              .catch((error) => {
                 setStatus({ success: false });
-                setErrors({ submit: err.message });
+                setErrors({ submit: error.message });
                 setSubmitting(false);
-              }
-            );
+              });
           } catch (err) {
             console.error(err);
             if (scriptedRef.current) {
@@ -162,164 +172,22 @@ const AuthRegister = () => {
         {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
           <form noValidate onSubmit={handleSubmit}>
             <Grid container spacing={3}>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="firstname-signup">Nombre*</InputLabel>
+                  <InputLabel htmlFor="firstname-signup">Nombre Finca</InputLabel>
                   <OutlinedInput
-                    id="firstname-login"
-                    type="firstname"
-                    value={values.firstname}
-                    name="firstname"
+                    id="nombre_finca"
+                    value={values.nombre_finca}
+                    name="nombre_finca"
                     onBlur={handleBlur}
                     onChange={handleChange}
                     placeholder="Nombre"
                     fullWidth
-                    error={Boolean(touched.firstname && errors.firstname)}
+                    error={Boolean(touched.nombre_finca && errors.nombre_finca)}
                   />
-                  {touched.firstname && errors.firstname && (
+                  {touched.nombre_finca && errors.nombre_finca && (
                     <FormHelperText error id="helper-text-firstname-signup">
-                      {errors.firstname}
-                    </FormHelperText>
-                  )}
-                </Stack>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <Stack spacing={1}>
-                  <InputLabel htmlFor="lastname-signup">Apellido*</InputLabel>
-                  <OutlinedInput
-                    fullWidth
-                    error={Boolean(touched.lastname && errors.lastname)}
-                    id="lastname-signup"
-                    type="lastname"
-                    value={values.lastname}
-                    name="lastname"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    placeholder="Apellido"
-                    inputProps={{}}
-                  />
-                  {touched.lastname && errors.lastname && (
-                    <FormHelperText error id="helper-text-lastname-signup">
-                      {errors.lastname}
-                    </FormHelperText>
-                  )}
-                </Stack>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <Stack spacing={1}>
-                  <FormControl fullWidth>
-                    <InputLabel id="label_nivel">Nivel Escolar</InputLabel>
-                    <Select
-                      labelId="label_nivel"
-                      id="nive_escolar"
-                      value={nivelEscolar}
-                      label="Nivel Escolar"
-                      onChange={(e) => {
-                        setnivelEscolar(e.target.value);
-                      }}
-                    >
-                      <MenuItem value={10}>Primaria</MenuItem>
-                      <MenuItem value={20}>Secundaria</MenuItem>
-                      <MenuItem value={30}>3er Nivel </MenuItem>
-                      <MenuItem value={30}>4to Nivel</MenuItem>
-                    </Select>
-
-                    {touched.company && errors.company && (
-                      <FormHelperText error id="helper-text-company-signup">
-                        {errors.company}
-                      </FormHelperText>
-                    )}
-                  </FormControl>
-                </Stack>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <Stack spacing={1}>
-                  <FormControl fullWidth>
-                    <InputLabel id="label_nivel">Estado Civil</InputLabel>
-                    <Select
-                      labelId="label_nivel"
-                      id="nive_escolar"
-                      value={estadoCivil}
-                      label="Nivel Escolar"
-                      onChange={(e) => {
-                        setestadoCivil(e.target.value);
-                      }}
-                    >
-                      <MenuItem value={10}>Solter@</MenuItem>
-                      <MenuItem value={20}>Casad@</MenuItem>
-                      <MenuItem value={30}>Divorciad@ </MenuItem>
-                      <MenuItem value={30}>Viud@</MenuItem>
-                    </Select>
-
-                    {touched.company && errors.company && (
-                      <FormHelperText error id="helper-text-company-signup">
-                        {errors.company}
-                      </FormHelperText>
-                    )}
-                  </FormControl>
-                </Stack>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <Stack spacing={1}>
-                  <InputLabel htmlFor="edad_id">Edad</InputLabel>
-                  <OutlinedInput
-                    fullWidth
-                    error={Boolean(touched.edad && errors.edad)}
-                    type="number"
-                    id="edad_id"
-                    value={values.edad}
-                    name="edad"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    placeholder="Edad"
-                    inputProps={{}}
-                  />
-                  {touched.edad && errors.edad && (
-                    <FormHelperText error id="edad_id">
-                      {errors.edad}
-                    </FormHelperText>
-                  )}
-                </Stack>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <Stack spacing={1}>
-                  <InputLabel htmlFor="anos_id">Años de Experiencia</InputLabel>
-                  <OutlinedInput
-                    fullWidth
-                    error={Boolean(touched.anos_experiencia && errors.anos_experiencia)}
-                    type="number"
-                    id="anos_id"
-                    value={values.anos_experiencia}
-                    name="anos_experiencia"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    placeholder="Años"
-                    inputProps={{}}
-                  />
-                  {touched.anos_experiencia && errors.anos_experiencia && (
-                    <FormHelperText error id="anos_id">
-                      {errors.anos_experiencia}
-                    </FormHelperText>
-                  )}
-                </Stack>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <Stack spacing={1}>
-                  <InputLabel htmlFor="company-signup">Numero de Hijos</InputLabel>
-                  <OutlinedInput
-                    fullWidth
-                    error={Boolean(touched.company && errors.company)}
-                    id="company-signup"
-                    value={values.company}
-                    name="edad"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    placeholder="Años"
-                    inputProps={{}}
-                  />
-                  {touched.company && errors.company && (
-                    <FormHelperText error id="helper-text-company-signup">
-                      {errors.company}
+                      {errors.nombre_finca}
                     </FormHelperText>
                   )}
                 </Stack>
@@ -327,143 +195,95 @@ const AuthRegister = () => {
               <Grid item xs={12}>
                 <Stack spacing={1}>
                   <FormControl fullWidth>
-                    <InputLabel id="label_nivel">Empresa</InputLabel>
-                    <Select
-                      labelId="label_nivel"
-                      id="nive_escolar"
-                      value={nivelEscolar}
-                      label="Nivel Escolar"
-                      onChange={(e) => {
-                        setnivelEscolar(e.target.value);
+                    <Autocomplete
+                      disablePortal
+                      id="combo-box-demo"
+                      getOptionLabel={(option) => option.label}
+                      isOptionEqualToValue={(option, value) => option.label === value.label}
+                      value={provincia}
+                      onChange={(event, newValue) => {
+                        setProvincia(newValue);
                       }}
-                    >
-                      <MenuItem value={10}>Primaria</MenuItem>
-                      <MenuItem value={20}>Secundaria</MenuItem>
-                      <MenuItem value={30}>3er Nivel </MenuItem>
-                      <MenuItem value={30}>4to Nivel</MenuItem>
-                    </Select>
-
-                    {touched.company && errors.company && (
-                      <FormHelperText error id="helper-text-company-signup">
-                        {errors.company}
-                      </FormHelperText>
-                    )}
+                      options={states_ec}
+                      renderInput={(params) => <TextField {...params} label="Provincia" opacity="20" />}
+                    />
                   </FormControl>
                 </Stack>
               </Grid>
               <Grid item xs={12}>
                 <Stack spacing={1}>
+                  <InputLabel htmlFor="firstname-signup">Ciudad</InputLabel>
+                  <OutlinedInput
+                    id="ciudad"
+                    value={values.ciudad}
+                    name="ciudad"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    placeholder="Ciudad"
+                    fullWidth
+                    error={Boolean(touched.ciudad && errors.ciudad)}
+                  />
+                  {touched.ciudad && errors.ciudad && (
+                    <FormHelperText error id="helper-text-firstname-signup">
+                      {errors.ciudad}
+                    </FormHelperText>
+                  )}
+                </Stack>
+              </Grid>
+              <Grid item xs={12}>
+                <Stack spacing={1}>
                   <FormControl fullWidth>
-                    <InputLabel id="demo-multiple-chip-label">Fincas</InputLabel>
-                    <Select
-                      labelId="demo-multiple-chip-label"
-                      id="demo-multiple-chip"
-                      multiple
-                      value={personName}
-                      onChange={handleChangeFincas}
-                      input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
-                      renderValue={(selected) => (
-                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                          {selected.map((value) => (
-                            <Chip key={value} label={value} />
-                          ))}
-                        </Box>
+                    <Autocomplete
+                      id="autocomplete_company"
+                      options={options}
+                      loading={loading}
+                      isOptionEqualToValue={(option, value) => option.name === value.name}
+                      filterOptions={(x) => x}
+                      onInputChange={(event, newInputValue) => {
+                        setInputValue(newInputValue);
+                      }}
+                      getOptionLabel={(option) => option.name}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Empresa"
+                          InputProps={{
+                            ...params.InputProps,
+                            endAdornment: (
+                              <>
+                                {loading ? <CircularProgress size={20} /> : null}
+                                {params.InputProps.endAdornment}
+                              </>
+                            )
+                          }}
+                        />
                       )}
-                      MenuProps={MenuProps}
-                    >
-                      {names.map((name) => (
-                        <MenuItem key={name} value={name} style={getStyles(name, personName, theme)}>
-                          {name}
-                        </MenuItem>
-                      ))}
-                    </Select>
+                    />
                   </FormControl>
                 </Stack>
               </Grid>
 
               <Grid item xs={12}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="email-signup">Correo Electronico*</InputLabel>
+                  <InputLabel htmlFor="email-signup">Coordenadas</InputLabel>
                   <OutlinedInput
                     fullWidth
                     error={Boolean(touched.email && errors.email)}
                     id="email-login"
                     type="email"
-                    value={values.email}
-                    name="email"
+                    value={values.coordenadas}
+                    name="coordenadas"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    placeholder="demo@empresa.com"
+                    placeholder="0.0000lat, 0.0000long"
                     inputProps={{}}
                   />
-                  {touched.email && errors.email && (
+                  {touched.coordenadas && errors.coordenadas && (
                     <FormHelperText error id="helper-text-email-signup">
-                      {errors.email}
+                      {errors.coordenadas}
                     </FormHelperText>
                   )}
                 </Stack>
-              </Grid>
-              <Grid item xs={12}>
-                <Stack spacing={1}>
-                  <InputLabel htmlFor="password-signup">Contraseña</InputLabel>
-                  <OutlinedInput
-                    fullWidth
-                    error={Boolean(touched.password && errors.password)}
-                    id="password-signup"
-                    type={showPassword ? 'text' : 'password'}
-                    value={values.password}
-                    name="password"
-                    onBlur={handleBlur}
-                    onChange={(e) => {
-                      handleChange(e);
-                      changePassword(e.target.value);
-                    }}
-                    endAdornment={
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={handleClickShowPassword}
-                          onMouseDown={handleMouseDownPassword}
-                          edge="end"
-                          color="secondary"
-                        >
-                          {showPassword ? <EyeOutlined /> : <EyeInvisibleOutlined />}
-                        </IconButton>
-                      </InputAdornment>
-                    }
-                    placeholder="******"
-                    inputProps={{}}
-                  />
-                  {touched.password && errors.password && (
-                    <FormHelperText error id="helper-text-password-signup">
-                      {errors.password}
-                    </FormHelperText>
-                  )}
-                </Stack>
-                <FormControl fullWidth sx={{ mt: 2 }}>
-                  <Grid container spacing={2} alignItems="center">
-                    <Grid item>
-                      <Box sx={{ bgcolor: level?.color, width: 85, height: 8, borderRadius: '7px' }} />
-                    </Grid>
-                    <Grid item>
-                      <Typography variant="subtitle1" fontSize="0.75rem">
-                        {level?.label}
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12}>
-                <Typography variant="body2">
-                  By Signing up, you agree to our &nbsp;
-                  <Link variant="subtitle2" component={RouterLink} to="#">
-                    Terms of Service
-                  </Link>
-                  &nbsp; and &nbsp;
-                  <Link variant="subtitle2" component={RouterLink} to="#">
-                    Privacy Policy
-                  </Link>
-                </Typography>
               </Grid>
               {errors.submit && (
                 <Grid item xs={12}>
@@ -473,7 +293,7 @@ const AuthRegister = () => {
               <Grid item xs={12}>
                 <AnimateButton>
                   <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
-                    Crear Cuenta
+                    Crear Finca
                   </Button>
                 </AnimateButton>
               </Grid>

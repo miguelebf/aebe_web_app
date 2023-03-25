@@ -13,6 +13,7 @@ const ProduccionPage = Loadable(lazy(() => import('pages/produccion')));
 const RepositorioPage = Loadable(lazy(() => import('pages/repositorio')));
 const ExportacionesPage = Loadable(lazy(() => import('pages/exportaciones')));
 const PrecioPage = Loadable(lazy(() => import('pages/precio')));
+const RegisterFinca = Loadable(lazy(() => import('pages/auth/register-finca')));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -64,6 +65,10 @@ const MainRoutes = {
         {
           path: 'email-verify',
           element: <CheckMail />
+        },
+        {
+          path: 'register-finca',
+          element: <RegisterFinca />
         }
       ]
     }

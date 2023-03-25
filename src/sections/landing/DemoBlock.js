@@ -86,7 +86,7 @@ const DemoBlock = () => {
                   </Grid>
                   <Grid item xs={12}>
                     <Typography variant="h3" sx={{ fontWeight: 600, textAlign: 'center' }}>
-                      $250/mes
+                      $350/mes
                     </Typography>
                     <Divider
                       variant="middle"

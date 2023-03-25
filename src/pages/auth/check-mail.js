@@ -9,14 +9,14 @@ import AuthWrapper from 'sections/auth/AuthWrapper';
 // ================================|| CHECK MAIL ||================================ //
 
 const CheckMail = () => {
-  const { user, logout, sendEmailVerification } = useAuth();
+  const { logout, sendEmailVerification } = useAuth();
 
   return (
     <AuthWrapper>
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <Box sx={{ mb: { xs: -0.5, sm: 0.5 } }}>
-            <Typography variant="h3">Hola {user.name.split(' ')[0]}, Verifica tu Correo Electrónico</Typography>
+            <Typography variant="h3">Hola, Verifica tu Correo Electrónico</Typography>
             <Typography color="secondary" sx={{ mb: 0.5, mt: 1.25 }}>
               Para poder usar la aplicion primero debes verificar tu correo electronico.
             </Typography>

@@ -18,6 +18,27 @@ const AuthGuard = ({ children }) => {
       if (!user.emailVerified) {
         navigate('email-verify', { replace: true });
       }
+      if (user.emailVerified && window.location.href.split('/').pop() === 'register-finca') {
+        if (user.email == 'droldan@aebe.com' || user.email == 'miguelbustamantef@gmail.com') {
+          navigate('register-finca', { replace: true });
+        } else {
+          navigate('/', { replace: true });
+        }
+      }
+      if (user.emailVerified && window.location.href.split('/').pop() === 'register') {
+        if (user.email == 'droldan@aebe.com' || user.email == 'miguelbustamantef@gmail.com') {
+          navigate('register-finca', { replace: true });
+        } else {
+          navigate('/', { replace: true });
+        }
+      }
+      if (user.emailVerified && window.location.href.split('/').pop() === 'register-company') {
+        if (user.email == 'droldan@aebe.com' || user.email == 'miguelbustamantef@gmail.com') {
+          navigate('register-finca', { replace: true });
+        } else {
+          navigate('/', { replace: true });
+        }
+      }
     }
   }, [isLoggedIn, navigate]);
 
