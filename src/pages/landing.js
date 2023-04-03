@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { Box, CardMedia } from '@mui/material';
 import Button from '@mui/material/Button';
+import { Link } from 'react-router-dom';
 // project import
 
 import Hero from 'sections/landing/Header';
@@ -118,6 +119,19 @@ const Landing = () => {
           <Box sx={{ my: 4, color: 'black', display: 'block' }}>/</Box>
           <Button onClick={scrollPlanes} sx={{ my: 2, color: 'black', display: 'block', ml: 5, fontWeight: 900 }}>
             {'Planes'}
+          </Button>
+          <Box sx={{ my: 4, color: 'black', display: 'block' }}>/</Box>
+          <Button
+            onClick={
+              <Link
+                to={{
+                  pathname: '/clima'
+                }}
+              />
+            }
+            sx={{ my: 2, color: 'black', display: 'block', ml: 5, fontWeight: 900 }}
+          >
+            {'Clima'}
           </Button>
         </MainAppBar>
         <Hero />

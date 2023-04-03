@@ -13,6 +13,7 @@ const AuthRegisterCompany = Loadable(lazy(() => import('pages/auth/register-comp
 const AuthForgotPassword = Loadable(lazy(() => import('pages/auth/forgot-password')));
 const Landing = Loadable(lazy(() => import('pages/landing')));
 const Politica = Loadable(lazy(() => import('pages/politica')));
+const ClimaPage = Loadable(lazy(() => import('pages/clima')));
 
 // ==============================|| AUTH ROUTING ||============================== //
 
@@ -50,6 +51,10 @@ const LoginRoutes = {
         {
           path: 'politica',
           element: <Politica />
+        },
+        {
+          path: 'clima',
+          element: <ClimaPage />
         }
       ]
     }
