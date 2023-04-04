@@ -6,9 +6,13 @@ import { Box } from '@mui/system';
 const Clima = () => (
   <Box
     sx={{
-      display: 'block',
+      display: 'flex',
       width: '100%',
-      height: '95%'
+      height: '100%',
+      overflow: 'auto',
+      '&::-webkit-scrollbar': { display: 'none' },
+      msOverflowStyle: 'none',
+      scrollbarWidth: 'none'
     }}
   >
     <iframe

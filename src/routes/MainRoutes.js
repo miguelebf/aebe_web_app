@@ -29,7 +29,7 @@ const MainRoutes = {
       ),
       children: [
         {
-          path: 'clima',
+          path: 'clima-private',
           element: <ClimaPage />
         },
         {

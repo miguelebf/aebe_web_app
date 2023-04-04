@@ -3,6 +3,7 @@ import { lazy } from 'react';
 // project import
 import GuestGuard from 'utils/route-guard/GuestGuard';
 import CommonLayout from 'layout/CommonLayout';
+import MainLayoutPublic from 'layout/MainLayoutPublic';
 import Loadable from 'components/Loadable';
 
 // render - login
@@ -55,6 +56,25 @@ const LoginRoutes = {
         {
           path: 'clima',
           element: <ClimaPage />
+        }
+      ]
+    },
+    {
+      path: '/clima',
+      children: [
+        {
+          path: '/clima',
+          element: (
+            <GuestGuard>
+              <MainLayoutPublic />
+            </GuestGuard>
+          ),
+          children: [
+            {
+              path: '/clima/public',
+              element: <ClimaPage />
+            }
+          ]
         }
       ]
     }

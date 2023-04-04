@@ -4,7 +4,6 @@ import { useEffect, useState, useRef } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { Box, CardMedia } from '@mui/material';
 import Button from '@mui/material/Button';
-import { Link } from 'react-router-dom';
 // project import
 
 import Hero from 'sections/landing/Header';
@@ -122,13 +121,9 @@ const Landing = () => {
           </Button>
           <Box sx={{ my: 4, color: 'black', display: 'block' }}>/</Box>
           <Button
-            onClick={
-              <Link
-                to={{
-                  pathname: '/clima'
-                }}
-              />
-            }
+            onClick={() => {
+              window.location.href = '/clima/public';
+            }}
             sx={{ my: 2, color: 'black', display: 'block', ml: 5, fontWeight: 900 }}
           >
             {'Clima'}

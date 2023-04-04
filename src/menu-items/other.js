@@ -73,7 +73,7 @@ const other = {
       id: 'clima',
       title: <FormattedMessage id="Clima" />,
       type: 'item',
-      url: '/clima',
+      url: '/clima-private',
       icon: icons.CloudOutlined
     },
     {
