@@ -54,6 +54,8 @@ const RepositorioPage = () => {
   const [dataouo_2022, setDataouo_2022] = useState([{ id: 'root', nombre: 'Cargando' }]);
   const [dataouo_2023, setDataouo_2023] = useState([{ id: 'root', nombre: 'Cargando' }]);
 
+  const [dataclima, setClima] = useState([{ id: 'root', nombre: 'Cargando' }]);
+
   //Loading
   const [loading, setLoading] = useState(false);
 
@@ -129,6 +131,9 @@ const RepositorioPage = () => {
           if (flag == 19) {
             setDataouo_2023(list);
           }
+          if (flag == 20) {
+            setClima(list);
+          }
         })
         .catch((error) => {
           // Uh-oh, an error occurred!
@@ -161,6 +166,8 @@ const RepositorioPage = () => {
     const listRef_spot_2022 = ref(storage, 'gs://aebe-ea435.appspot.com/9. SPOT/2022');
     const listRef_spot_2023 = ref(storage, 'gs://aebe-ea435.appspot.com/9. SPOT/2023');
 
+    const listRef_clima = ref(storage, 'gs://aebe-ea435.appspot.com/clima');
+
     var count = 1;
     create_list(listRef_es_2021, count, 1);
     create_list(listRef_es_2022, count, 2);
@@ -181,6 +188,7 @@ const RepositorioPage = () => {
     create_list(listRef_spot_2023, count, 17);
     create_list(listRef_ouo_2022, count, 18);
     create_list(listRef_ouo_2023, count, 19);
+    create_list(listRef_clima, count, 20);
   }, []);
 
   const renderTree = (list) =>
@@ -407,6 +415,11 @@ const RepositorioPage = () => {
                 {renderTree(dataspot_2023)}
               </Grid>
             </TreeItem>
+          </TreeItem>
+          <TreeItem nodeId="80" label={<Typography variant="h5"> Clima</Typography>}>
+            <Grid container spacing={2}>
+              {renderTree(dataclima)}
+            </Grid>
           </TreeItem>
         </TreeView>
       </Paper>
