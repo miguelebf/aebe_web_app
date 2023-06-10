@@ -56,6 +56,9 @@ const RepositorioPage = () => {
 
   const [dataclima, setClima] = useState([{ id: 'root', nombre: 'Cargando' }]);
 
+  const [databwp_2023, set_databwp_2023] = useState([{ id: 'root', nombre: 'Cargando' }]);
+  const [databwd_2023, set_databwd_2023] = useState([{ id: 'root', nombre: 'Cargando' }]);
+
   //Loading
   const [loading, setLoading] = useState(false);
 
@@ -134,6 +137,12 @@ const RepositorioPage = () => {
           if (flag == 20) {
             setClima(list);
           }
+          if (flag == 21) {
+            set_databwp_2023(list);
+          }
+          if (flag == 22) {
+            set_databwd_2023(list);
+          }
         })
         .catch((error) => {
           // Uh-oh, an error occurred!
@@ -168,6 +177,9 @@ const RepositorioPage = () => {
 
     const listRef_clima = ref(storage, 'gs://aebe-ea435.appspot.com/clima');
 
+    const listRef_banana_weekly_prices_2023 = ref(storage, 'gs://aebe-ea435.appspot.com/10. BANANA WEEKLY PRICES & TRENDS/2023');
+    const listRef_banana_weekly_data_2023 = ref(storage, 'gs://aebe-ea435.appspot.com/11. BANANA WEEKLY DATA/2023');
+
     var count = 1;
     create_list(listRef_es_2021, count, 1);
     create_list(listRef_es_2022, count, 2);
@@ -189,6 +201,8 @@ const RepositorioPage = () => {
     create_list(listRef_ouo_2022, count, 18);
     create_list(listRef_ouo_2023, count, 19);
     create_list(listRef_clima, count, 20);
+    create_list(listRef_banana_weekly_prices_2023, count, 21);
+    create_list(listRef_banana_weekly_data_2023, count, 22);
   }, []);
 
   const renderTree = (list) =>
@@ -420,6 +434,21 @@ const RepositorioPage = () => {
             <Grid container spacing={2}>
               {renderTree(dataclima)}
             </Grid>
+          </TreeItem>
+          {/*Banana Weekly*/}
+          <TreeItem nodeId="101" label={<Typography variant="h5"> Banana Weekly Prices & Trends </Typography>}>
+            <TreeItem nodeId="102" label={<Typography variant="h6"> 2023</Typography>}>
+              <Grid container spacing={2}>
+                {renderTree(databwp_2023)}
+              </Grid>
+            </TreeItem>
+          </TreeItem>
+          <TreeItem nodeId="103" label={<Typography variant="h5"> Banana Weekly Data </Typography>}>
+            <TreeItem nodeId="104" label={<Typography variant="h6"> 2023</Typography>}>
+              <Grid container spacing={2}>
+                {renderTree(databwd_2023)}
+              </Grid>
+            </TreeItem>
           </TreeItem>
         </TreeView>
       </Paper>

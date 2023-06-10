@@ -16,7 +16,7 @@ const Clima = () => (
     }}
   >
     <iframe
-      src="https://aebe.agroclima.online/aebe/?finca=142"
+      src="https://www.aebe.agroclima.online/aebe/?finca=142"
       title="page"
       width="100%"
       height="100%"
