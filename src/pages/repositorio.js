@@ -430,13 +430,13 @@ const RepositorioPage = () => {
               </Grid>
             </TreeItem>
           </TreeItem>
-          <TreeItem nodeId="80" label={<Typography variant="h5"> Clima</Typography>}>
+          <TreeItem nodeId="80" label={<Typography variant="h5"> Weather Conditions</Typography>}>
             <Grid container spacing={2}>
               {renderTree(dataclima)}
             </Grid>
           </TreeItem>
           {/*Banana Weekly*/}
-          <TreeItem nodeId="101" label={<Typography variant="h5"> Banana Weekly Prices & Trends </Typography>}>
+          <TreeItem nodeId="101" label={<Typography variant="h5"> Banana Weekly </Typography>}>
             <TreeItem nodeId="102" label={<Typography variant="h6"> 2023</Typography>}>
               <Grid container spacing={2}>
                 {renderTree(databwp_2023)}
