@@ -436,7 +436,7 @@ const RepositorioPage = () => {
             </Grid>
           </TreeItem>
           {/*Banana Weekly*/}
-          <TreeItem nodeId="101" label={<Typography variant="h5"> Banana Weekly </Typography>}>
+          <TreeItem nodeId="101" label={<Typography variant="h5"> Price&Trends </Typography>}>
             <TreeItem nodeId="102" label={<Typography variant="h6"> 2023</Typography>}>
               <Grid container spacing={2}>
                 {renderTree(databwp_2023)}
