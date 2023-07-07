@@ -15,6 +15,8 @@ const ExportacionesPage = Loadable(lazy(() => import('pages/exportaciones')));
 const PrecioPage = Loadable(lazy(() => import('pages/precio')));
 const RegisterFinca = Loadable(lazy(() => import('pages/auth/register-finca')));
 
+// Test
+const DataTest = Loadable(lazy(() => import('pages/data_copy')));
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -51,6 +53,10 @@ const MainRoutes = {
         {
           path: 'precios',
           element: <PrecioPage />
+        },
+        {
+          path: 'data-test',
+          element: <DataTest />
         }
       ]
     },
