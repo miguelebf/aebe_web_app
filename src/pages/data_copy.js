@@ -14,7 +14,20 @@ import barras from 'assets/images/barras_verde.png';
 import posicion from 'assets/images/posicion.png';
 
 //Recharts
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Line, LineChart } from 'recharts';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  Line,
+  LineChart,
+  LabelList,
+  Label
+} from 'recharts';
 
 // Maps
 import WorldMap from 'components/worldMap';
@@ -207,7 +220,7 @@ const DataPage = () => {
                         325mil
                       </Typography>{' '}
                       <Typography display="inline" align="center" variant="h3" component="div">
-                        cajas de banano.
+                        cajas de banano de 18.14kg.
                       </Typography>
                     </Box>
                   </Grid>
@@ -270,8 +283,9 @@ const DataPage = () => {
                         {/* Imagen Posicion */}
                         <Box display="flex" alignItems="center" justifyContent="center" flexDirection="row" sx={{ mt: -8 }}>
                           <img src={posicion} alt="" />
-                          <Box position="absolute" display="flex" alignItems="center" justifyContent="center">
-                            <Typography variant="h1" component="div" color={colors[0]}>
+                          <Box position="absolute" display="flex" alignItems="center" justifyContent="center" sx={{ mr: 1 }}>
+                            {/* Change Font Size */}
+                            <Typography variant="h1" component="div" color={colors[0]} sx={{ fontSize: 90 }}>
                               1
                             </Typography>
                           </Box>
@@ -318,18 +332,22 @@ const DataPage = () => {
                         height={400}
                         data={data}
                         margin={{
-                          top: 5,
+                          top: 20,
                           right: 30,
-                          left: 20,
+                          left: 40,
                           bottom: 5
                         }}
                       >
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="name" />
-                        <YAxis />
+                        <YAxis>
+                          <Label value="Millones de Cajas 18.14kg" position="left" angle={-90} dx={-10} fontSize={16} offset={0} />
+                        </YAxis>
                         <Tooltip />
                         <Legend />
-                        <Bar dataKey="uv" fill={colors[1]} />
+                        <Bar dataKey="uv" fill={colors[1]}>
+                          <LabelList dataKey="name" position="top" />
+                        </Bar>
                       </BarChart>
                     </ResponsiveContainer>
                   </Grid>
@@ -465,18 +483,22 @@ const DataPage = () => {
                       height={400}
                       data={data}
                       margin={{
-                        top: 5,
+                        top: 10,
                         right: 30,
-                        left: 20,
+                        left: 40,
                         bottom: 5
                       }}
                     >
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="name" />
-                      <YAxis />
+                      <YAxis>
+                        <Label value="Hectáreas" position="left" angle={-90} dx={-20} fontSize={16} />
+                      </YAxis>
                       <Tooltip />
                       <Legend />
-                      <Bar dataKey="pv" fill={colors[0]} />
+                      <Bar dataKey="pv" fill={colors[0]}>
+                        <LabelList dataKey="name" position="top" />
+                      </Bar>
                     </BarChart>
                   </ResponsiveContainer>
                 </Grid>
@@ -533,13 +555,15 @@ const DataPage = () => {
                       margin={{
                         top: 5,
                         right: 30,
-                        left: 20,
+                        left: 40,
                         bottom: 5
                       }}
                     >
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="name" />
-                      <YAxis />
+                      <YAxis>
+                        <Label value="Hectáreas" position="left" angle={-90} dx={-20} fontSize={16} />
+                      </YAxis>
                       <Tooltip />
                       <Legend />
                       <Line type="monotone" dataKey="pv" stroke={colors[0]} activeDot={{ r: 8 }} />
