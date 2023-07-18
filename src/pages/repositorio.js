@@ -59,6 +59,8 @@ const RepositorioPage = () => {
   const [databwp_2023, set_databwp_2023] = useState([{ id: 'root', nombre: 'Cargando' }]);
   const [databwd_2023, set_databwd_2023] = useState([{ id: 'root', nombre: 'Cargando' }]);
 
+  const [databy_2023, set_databy_2023] = useState([{ id: 'root', nombre: 'Cargando' }]);
+
   //Loading
   const [loading, setLoading] = useState(false);
 
@@ -143,6 +145,9 @@ const RepositorioPage = () => {
           if (flag == 22) {
             set_databwd_2023(list);
           }
+          if (flag == 23) {
+            set_databy_2023(list);
+          }
         })
         .catch((error) => {
           // Uh-oh, an error occurred!
@@ -180,6 +185,8 @@ const RepositorioPage = () => {
     const listRef_banana_weekly_prices_2023 = ref(storage, 'gs://aebe-ea435.appspot.com/10. BANANA WEEKLY PRICES & TRENDS/2023');
     const listRef_banana_weekly_data_2023 = ref(storage, 'gs://aebe-ea435.appspot.com/11. BANANA WEEKLY DATA/2023');
 
+    const listRef_banana_yield_2023 = ref(storage, 'gs://aebe-ea435.appspot.com/BANANA YIELD REPORT/');
+
     var count = 1;
     create_list(listRef_es_2021, count, 1);
     create_list(listRef_es_2022, count, 2);
@@ -203,6 +210,7 @@ const RepositorioPage = () => {
     create_list(listRef_clima, count, 20);
     create_list(listRef_banana_weekly_prices_2023, count, 21);
     create_list(listRef_banana_weekly_data_2023, count, 22);
+    create_list(listRef_banana_yield_2023, count, 23);
   }, []);
 
   const renderTree = (list) =>
@@ -449,6 +457,12 @@ const RepositorioPage = () => {
                 {renderTree(databwd_2023)}
               </Grid>
             </TreeItem>
+          </TreeItem>
+          {/* Banana Yield Report */}
+          <TreeItem nodeId="110" label={<Typography variant="h5"> Banana Yield Report</Typography>}>
+            <Grid container spacing={2}>
+              {renderTree(databy_2023)}
+            </Grid>
           </TreeItem>
         </TreeView>
       </Paper>
